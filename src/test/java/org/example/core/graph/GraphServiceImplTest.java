@@ -80,7 +80,7 @@ class GraphServiceImplTest {
   void test(GraphNode gn, String parentName, List<String> childNames, List<Integer> latencies) {
     assertEquals(childNames.size(), latencies.size(), "The two lists need to be equally long.");
     assertEquals(parentName, gn.getName());
-    assertEquals(gn.dependentNodeCount(), childNames.size());
+    assertEquals(gn.getDependentNodes().size(), childNames.size());
     for (int i = 0; i < childNames.size(); i++) {
       Map.Entry<GraphNode, Integer> childNode = gn.getDependentTreeNodeByName(childNames.get(i));
       assertEquals(childNode.getKey().getName(), childNames.get(i));

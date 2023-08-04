@@ -34,6 +34,9 @@ public class Main {
         main.calculateAndPrintAverageLatency(3, List.of("A", "D", "C"));
         main.calculateAndPrintAverageLatency(4, List.of("A", "E", "B", "C", "D"));
         main.calculateAndPrintAverageLatency(5, List.of("A", "E", "D"));
+        main.calculateAndPrintNumberOfTracesWithHops(6, "C", "C", 3, false);
+        main.calculateAndPrintNumberOfTracesWithHops(6, "A", "C", 4, true);
+
     }
 
     private void initGraphDialog() {
@@ -43,6 +46,11 @@ public class Main {
         Scanner s = new Scanner(System.in);
         String value = s.nextLine();
         this.traverseService.initGraph(value != null && !value.isEmpty() ? value : DEFAULT_GRAPH_DATA);
+    }
+
+    private void calculateAndPrintNumberOfTracesWithHops(int index, String startName, String endName, int maxHops, boolean onlyExactHops) {
+        String preFix = index + ". ";
+        System.out.println(preFix + this.traverseService.findNumberOfPossibleTraces(startName, endName, maxHops, onlyExactHops));
     }
 
     private void calculateAndPrintAverageLatency(int index, List<String> path) {
