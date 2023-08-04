@@ -31,8 +31,7 @@ class TraverseServiceTest {
         GraphNode graphNode = new GraphNode("A");
         Map<String, GraphNode> lookupMap = new HashMap<>();
         lookupMap.put("A", graphNode);
-        Map.Entry<GraphNode, Map<String, GraphNode>> result = Map.entry(graphNode, lookupMap);
-        doReturn(result).when(this.graphService).constructGraphFromFile(filePath);
+        doReturn(lookupMap).when(this.graphService).constructGraphFromFile(filePath);
 
         Field lookupMapField = ReflectionUtils
                 .findFields(TraverseService.class, f -> f.getName().equals("lookupMap"),

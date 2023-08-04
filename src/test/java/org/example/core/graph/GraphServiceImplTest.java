@@ -29,9 +29,9 @@ class GraphServiceImplTest {
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
 
     // Act
-    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
+    Map<String, GraphNode> map = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(gA.getKey(), "A", List.of("B"), List.of(4));
+    test(map.get("A"), "A", List.of("B"), List.of(4));
   }
 
   @Test
@@ -42,10 +42,10 @@ class GraphServiceImplTest {
     gt.add(new GraphTuple("B", "A", 5));
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
     // Act
-    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
+    Map<String, GraphNode> map = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(gA.getKey(), "A", List.of("B"), List.of(4));
-    test(gA.getKey().getDependentTreeNodeByName("B").getKey(), "B", List.of("A"), List.of(5));
+    test(map.get("A"), "A", List.of("B"), List.of(4));
+    test(map.get("A").getDependentTreeNodeByName("B").getKey(), "B", List.of("A"), List.of(5));
   }
 
   @Test
@@ -63,10 +63,11 @@ class GraphServiceImplTest {
     gt.add(new GraphTuple("A", "E", 7));
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
     // Act
-    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
+    Map<String, GraphNode> map = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(gA.getKey(), "A", List.of("B", "D", "E"), List.of(5, 5, 7));
-    GraphNode gB = gA.getKey().getDependentTreeNodeByName("B").getKey();
+    GraphNode gA = map.get("A");
+    test(gA, "A", List.of("B", "D", "E"), List.of(5, 5, 7));
+    GraphNode gB = gA.getDependentTreeNodeByName("B").getKey();
     test(gB, "B", List.of("C"), List.of(4));
     GraphNode gC = gB.getDependentTreeNodeByName("C").getKey();
     test(gC, "C", List.of("D", "E"), List.of(8, 2));

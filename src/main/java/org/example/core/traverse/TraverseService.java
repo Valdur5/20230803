@@ -17,9 +17,7 @@ public class TraverseService {
 
   public void initGraph(String absolutePathAndFileName) {
     if (this.lookupMap == null) {
-      Map.Entry<GraphNode, Map<String, GraphNode>> graphData =
-          this.graphService.constructGraphFromFile(absolutePathAndFileName);
-      this.lookupMap = graphData.getValue();
+      this.lookupMap = this.graphService.constructGraphFromFile(absolutePathAndFileName);
     }
   }
 
