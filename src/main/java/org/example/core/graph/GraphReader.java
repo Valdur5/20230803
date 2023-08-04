@@ -1,5 +1,7 @@
 package org.example.core.graph;
 
+import org.example.details.MalformedInputFormatException;
+
 import java.util.List;
 
 public interface GraphReader {
@@ -8,6 +10,7 @@ public interface GraphReader {
      * the graph nodes.
      * @param filePathAndName the path and name all in one argument.
      * @return the list of GraphTuple
+     * @throws MalformedInputFormatException in case the file is empty or not in the right format.
      */
     List<GraphTuple> getGraphTuplesForFile(String filePathAndName);
 }

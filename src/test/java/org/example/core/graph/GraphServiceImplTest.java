@@ -15,9 +15,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class GraphServiceTest {
+class GraphServiceImplTest {
 
-  @InjectMocks private GraphService graphService;
+  @InjectMocks private GraphServiceImpl graphServiceImpl;
 
   @Mock private GraphReader graphReader;
 
@@ -29,9 +29,9 @@ class GraphServiceTest {
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
 
     // Act
-    GraphNode trA = this.graphService.constructTreeNodeFromFile("anyFilePath/AndName.txt");
+    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(trA, "A", List.of("B"), List.of(4));
+    test(gA.getKey(), "A", List.of("B"), List.of(4));
   }
 
   @Test
@@ -42,10 +42,10 @@ class GraphServiceTest {
     gt.add(new GraphTuple("B", "A", 5));
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
     // Act
-    GraphNode trA = this.graphService.constructTreeNodeFromFile("anyFilePath/AndName.txt");
+    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(trA, "A", List.of("B"), List.of(4));
-    test(trA.getDependentTreeNodeByName("B").getKey(), "B", List.of("A"), List.of(5));
+    test(gA.getKey(), "A", List.of("B"), List.of(4));
+    test(gA.getKey().getDependentTreeNodeByName("B").getKey(), "B", List.of("A"), List.of(5));
   }
 
   @Test
@@ -63,17 +63,17 @@ class GraphServiceTest {
     gt.add(new GraphTuple("A", "E", 7));
     doReturn(gt).when(this.graphReader).getGraphTuplesForFile(anyString());
     // Act
-    GraphNode trA = this.graphService.constructTreeNodeFromFile("anyFilePath/AndName.txt");
+    Map.Entry<GraphNode, Map<String, GraphNode>> gA = this.graphServiceImpl.constructGraphFromFile("anyFilePath/AndName.txt");
     // Assert
-    test(trA, "A", List.of("B", "D", "E"), List.of(5, 5, 7));
-    GraphNode trB = trA.getDependentTreeNodeByName("B").getKey();
-    test(trB, "B", List.of("C"), List.of(4));
-    GraphNode trC = trB.getDependentTreeNodeByName("C").getKey();
-    test(trC, "C", List.of("D", "E"), List.of(8, 2));
-    GraphNode trD = trC.getDependentTreeNodeByName("D").getKey();
-    test(trD, "D", List.of("C", "E"), List.of(8, 6));
-    GraphNode trE = trD.getDependentTreeNodeByName("E").getKey();
-    test(trE, "E", List.of("B"), List.of(3));
+    test(gA.getKey(), "A", List.of("B", "D", "E"), List.of(5, 5, 7));
+    GraphNode gB = gA.getKey().getDependentTreeNodeByName("B").getKey();
+    test(gB, "B", List.of("C"), List.of(4));
+    GraphNode gC = gB.getDependentTreeNodeByName("C").getKey();
+    test(gC, "C", List.of("D", "E"), List.of(8, 2));
+    GraphNode gD = gC.getDependentTreeNodeByName("D").getKey();
+    test(gD, "D", List.of("C", "E"), List.of(8, 6));
+    GraphNode gE = gD.getDependentTreeNodeByName("E").getKey();
+    test(gE, "E", List.of("B"), List.of(3));
   }
 
   void test(GraphNode gn, String parentName, List<String> childNames, List<Integer> latencies) {

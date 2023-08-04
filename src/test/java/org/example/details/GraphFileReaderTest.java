@@ -21,13 +21,11 @@ class GraphFileReaderTest {
   @Spy @InjectMocks private GraphFileReader graphFileReader;
 
   @Test
-  void test_getGraphTuplesForFile_emptyList_emptyList() {
+  void test_getGraphTuplesForFile_emptyList_exception() {
     // Arrange
     doReturn(new ArrayList<>()).when(this.graphFileReader).readFileContentAsList(anyString());
     // Act
-    List<GraphTuple> graphTuples = this.graphFileReader.getGraphTuplesForFile("anyString");
-    // Assert
-    assertEquals(0, graphTuples.size());
+    Assertions.assertThrows(MalformedInputFormatException.class, () -> this.graphFileReader.getGraphTuplesForFile("anyString"));
   }
 
   @Test

@@ -20,6 +20,9 @@ public class GraphFileReader implements GraphReader {
     public List<GraphTuple> getGraphTuplesForFile(String fileNameAndPath) {
         List<String> graphTuplesAsString = this.readFileContentAsList(fileNameAndPath);
         List<GraphTuple> graphTuples = new ArrayList<>();
+        if(graphTuplesAsString == null || graphTuplesAsString.isEmpty()) {
+            throw new MalformedInputFormatException();
+        }
         for(String s : graphTuplesAsString) {
             if(s == null || s.length() < 3 || !Character.isDigit(s.charAt(2))) {
                 throw new MalformedInputFormatException();

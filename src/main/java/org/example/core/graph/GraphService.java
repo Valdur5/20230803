@@ -1,36 +1,16 @@
 package org.example.core.graph;
 
-import java.util.HashMap;
-import java.util.List;
+import org.example.details.MalformedInputFormatException;
+
 import java.util.Map;
 
-public class GraphService {
-
-  private final GraphReader graphReader;
-
-  public GraphService(GraphReader graphReader) {
-    this.graphReader = graphReader;
-  }
-
-  public GraphNode constructTreeNodeFromFile(String filePathAndName) {
-    List<GraphTuple> tuples = this.graphReader.getGraphTuplesForFile(filePathAndName);
-    Map<String, GraphNode> lookupMap = new HashMap<>();
-    GraphNode graphNode = null;
-    for (GraphTuple t : tuples) {
-      if (graphNode == null) {
-        graphNode = new GraphNode(t.parentName());
-        lookupMap.put(t.parentName(), graphNode);
-        lookupMap.put(t.childName(), new GraphNode(t.childName()));
-      } else {
-        if (!lookupMap.containsKey(t.parentName()))
-          lookupMap.put(t.parentName(), new GraphNode(t.parentName()));
-        if (!lookupMap.containsKey(t.childName()))
-          lookupMap.put(t.childName(), new GraphNode(t.childName()));
-      }
-    }
-    for (GraphTuple t : tuples) {
-      lookupMap.get(t.parentName()).addDependentNode(lookupMap.get(t.childName()), t.latency());
-    }
-    return graphNode;
-  }
+public interface GraphService {
+    /**
+     * Create a Graph from a given file.
+     * @param filePathAndName the path and file name.
+     * @return the first GraphNode (based on occurrence in the list) and the
+     * lookup map where all nodes are available.
+     * @throws MalformedInputFormatException in case the file could not be loaded becase the format is not right.
+     */
+    Map.Entry<GraphNode, Map<String, GraphNode>> constructGraphFromFile(String filePathAndName);
 }
