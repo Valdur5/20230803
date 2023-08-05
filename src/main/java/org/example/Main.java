@@ -14,7 +14,9 @@ public class Main {
 
     private static final String NO_SUCH_TRACE = "NO SUCH TRACE";
     private static final String DEFAULT_GRAPH_DATA = "src/main/resources/dependencyGraph.txt";
+    private static final String RESULT_OUTPUT_FORMAT = "%d. %s\n";
 
+    private int index = 0;
     private final GraphReader graphReader = new GraphFileReader();
     private final GraphService graphService = new GraphServiceImpl(graphReader);
     private final TraverseService traverseService = new TraverseService(graphService);
@@ -29,15 +31,16 @@ public class Main {
         // The given file format. There should be NO dependency to the core package from the details package.
         Main main = new Main();
         main.initGraphDialog();
-        main.calculateAndPrintAverageLatency(1, List.of("A", "B","C"));
-        main.calculateAndPrintAverageLatency(2, List.of("A", "D"));
-        main.calculateAndPrintAverageLatency(3, List.of("A", "D", "C"));
-        main.calculateAndPrintAverageLatency(4, List.of("A", "E", "B", "C", "D"));
-        main.calculateAndPrintAverageLatency(5, List.of("A", "E", "D"));
-        main.calculateAndPrintNumberOfTracesWithHops(6, "C", "C", 3, false);
-        main.calculateAndPrintNumberOfTracesWithHops(6, "A", "C", 4, true);
-
+        main.calculateAndPrintAverageLatency(List.of("A", "B","C"));
+        main.calculateAndPrintAverageLatency(List.of("A", "D"));
+        main.calculateAndPrintAverageLatency(List.of("A", "D", "C"));
+        main.calculateAndPrintAverageLatency(List.of("A", "E", "B", "C", "D"));
+        main.calculateAndPrintAverageLatency(List.of("A", "E", "D"));
+        main.calculateAndPrintNumberOfTracesWithHops("C", "C", 3, false);
+        main.calculateAndPrintNumberOfTracesWithHops("A", "C", 4, true);
+        main.calculateAndPrintShortestLatencyPath("A", "C");
     }
+
 
     private void initGraphDialog() {
         System.out.println("In case you want to load another file than the default ["+DEFAULT_GRAPH_DATA+"].");
@@ -48,17 +51,29 @@ public class Main {
         this.traverseService.initGraph(value != null && !value.isEmpty() ? value : DEFAULT_GRAPH_DATA);
     }
 
-    private void calculateAndPrintNumberOfTracesWithHops(int index, String startName, String endName, int maxHops, boolean onlyExactHops) {
-        String preFix = index + ". ";
-        System.out.println(preFix + this.traverseService.findNumberOfPossibleTraces(startName, endName, maxHops, onlyExactHops));
+    private void calculateAndPrintShortestLatencyPath(String startName, String endName) {
+
     }
 
-    private void calculateAndPrintAverageLatency(int index, List<String> path) {
-        String preFix = index + ". ";
+    @FunctionalInterface
+    public interface MyFunction {
+        Integer apply();
+    }
+
+    private void calculateAndPrintNumberOfTracesWithHops(String startName, String endName, int maxHops, boolean onlyExactHops) {
+        this.printLine(() -> this.traverseService.findNumberOfPossibleTraces(startName, endName, maxHops, onlyExactHops));
+    }
+
+    private void calculateAndPrintAverageLatency(List<String> path) {
+        this.printLine(() -> traverseService.averageLatencyOfPath(path));
+    }
+
+    private void printLine(MyFunction value) {
+        this.index++;
         try {
-            System.out.println(preFix + traverseService.averageLatencyOfPath(path));
+            System.out.printf(RESULT_OUTPUT_FORMAT, this.index, value.apply());
         } catch (NoTraceFoundException e) {
-            System.out.println(preFix + NO_SUCH_TRACE);
+            System.out.printf(RESULT_OUTPUT_FORMAT, this.index, NO_SUCH_TRACE);
         }
     }
 }
