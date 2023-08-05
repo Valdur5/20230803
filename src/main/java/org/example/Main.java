@@ -39,6 +39,12 @@ public class Main {
         main.calculateAndPrintNumberOfTracesWithHops("C", "C", 3, false);
         main.calculateAndPrintNumberOfTracesWithHops("A", "C", 4, true);
         main.calculateAndPrintShortestLatencyPath("A", "C");
+        main.calculateAndPrintShortestLatencyPath("B", "B");
+        main.calculateAndPrintAllPathsWithLatencyLimit("C","C",30);
+    }
+
+    private void calculateAndPrintAllPathsWithLatencyLimit(String startName, String endName, int latencyLimit) {
+        this.printLine(() -> this.traverseService.findAllPathsWithLessThanLatency(startName, endName, latencyLimit));
     }
 
 
@@ -52,11 +58,11 @@ public class Main {
     }
 
     private void calculateAndPrintShortestLatencyPath(String startName, String endName) {
-
+        this.printLine(() -> this.traverseService.findShortestLatencyForPath(startName, endName));
     }
 
     @FunctionalInterface
-    public interface MyFunction {
+    public interface GraphFunction {
         Integer apply();
     }
 
@@ -68,7 +74,7 @@ public class Main {
         this.printLine(() -> traverseService.averageLatencyOfPath(path));
     }
 
-    private void printLine(MyFunction value) {
+    private void printLine(GraphFunction value) {
         this.index++;
         try {
             System.out.printf(RESULT_OUTPUT_FORMAT, this.index, value.apply());
